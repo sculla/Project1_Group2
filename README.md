@@ -8,7 +8,8 @@ Please let me know if you're having any issues with this, I've included a link h
 
 --@sculla
 
-## MVP - Stations that will get money/productive canviser 
+## MVP - Stations that will get money/productive canviser  
+"Send your staff with these 4 hour shifts to these 10 stations for the best turn out"  
 * busiest stations  
 * sustained flow  
 
