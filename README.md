@@ -7,3 +7,11 @@ With this, we are able to easily each work off of a single branch, develop, and 
 Please let me know if you're having any issues with this, I've included a link here to review as well [Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) 
 
 --@sculla
+
+## Please check issue list
+
+Feature ideas:
+* adding a geo heat map  
+** pulling second DB that maps the names of the stations to an address  
+* turnstile graphs for the traffic by hour?
+
