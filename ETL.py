@@ -17,13 +17,37 @@ PATH = 'turnstile_190629.txt'
 # dtypes: int64(2), object(9)
 # memory usage: 17.3+ MB
 
-def extract(filename= PATH):
+
+
+def extract(filename= 'turnstile_190629.txt'):
+    """
+
+    :param filename: week's file name
+    :return: Pandas DataFrame of the MTA week's data with a datetime object in place of the date & time objects
+    """
+
+    from datetime import datetime
+
+    #Fatima
+    #TODO StationNames
+
+
+    #aaron's td
+
+    #TODO enries per time exits per time
 
     import pandas as pd
-    import numpy as np
     df = pd.read_csv(filename)
-    print(df['ENTRIES'].describe())
+    dt_format = '%m/%d/%Y %H:%M:%S'
+    working = []
+    for _, row in enumerate(df.values):
+        working.append(datetime.strptime(row[6]+' '+row[7], dt_format))
+    df['datetime'] = pd.DataFrame(working)
+    df.drop(columns=['DATE','TIME'], inplace=True)
+    return df
+
 
 
 if __name__ == "__main__":
-    extract()
+    df = extract()
+    print(df.columns)
