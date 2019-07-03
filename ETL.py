@@ -43,6 +43,7 @@ def transform(df):
     cols_diff = ["ENTRIES", "EXITS"]
     cols_add = ["TURNSTILE_ENTRIES", "TURNSTILE_EXITS"]
     df[cols_add] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])[cols_diff].diff()
+    df["Entries_cumsum"] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])["TURNSTILE_ENTRIES"].cumsum()
     df.to_pickle('.Turnstile_transformed.pickle')
     print('transformed into .Turnstile_transformed.pickle')
 
