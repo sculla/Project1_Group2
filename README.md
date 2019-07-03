@@ -24,3 +24,10 @@ Feature ideas:
 * turnstile graphs for the traffic by hour?  
 ** not just the most popular 
 * remove tourism hubs  
+
+
+Column math to do:
+*first check if counts are increasing per station or per station AND per line, becuase of the cumulative count issue 
+using whichever makes sense:
+
+to be continued after pair exercise. . . 
