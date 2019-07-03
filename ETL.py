@@ -44,8 +44,7 @@ def transform(df):
     cols_add = ["TURNSTILE_ENTRIES", "TURNSTILE_EXITS"]
     df[cols_add] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])[cols_diff].diff()
     df.to_pickle('.Turnstile_transformed.pickle')
-
-    return df
+    print('transformed into .Turnstile_transformed.pickle')
 
 
 if __name__ == "__main__":
