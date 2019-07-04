@@ -10,3 +10,7 @@
 \.idea/workspace\.xml
 
 \.ipynb_checkpoints/
+
+\.DateTime_transformed\.pickle
+
+\.Turnstile_transformed\.pickle

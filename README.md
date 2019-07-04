@@ -1,4 +1,5 @@
-# Project1_Group2 -- Metis MTA Project
+# Project1_Group2
+Metis MTA 
 
 ## Making a Feature Branch for your contribution:
 When making a branch for your part of the project, please use the feature/<your branch name> to denote your part of the project. After the successful completion of the feature, we will merge it to the develop branch.  
