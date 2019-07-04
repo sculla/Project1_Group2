@@ -1,3 +1,4 @@
+#!/anaconda3/envs/metis/bin/python
 
 # Fatima
 # TODO StationNames
@@ -10,14 +11,18 @@
 ##  keeping duplicates, they look to be audits back at same timestamp
 
 
-def extract(filename= 'turnstile_190629.txt'):
+def extract(filename=''):
     """
+    extract file and output pickle of the loaded csv into a pickle, optional return of the df.
 
     :param filename: week's file name
     :return: Pandas DataFrame of the MTA week's data with a datetime object in place of the date & time objects
     """
 
     import pandas as pd
+
+    if filename == '':
+        raise ValueError("Filename cannot be blank")
 
     df = pd.read_csv(filename, parse_dates=[['DATE', 'TIME']], keep_date_col=True)
     df.to_pickle('.DateTime_transformed.pickle')
@@ -28,10 +33,6 @@ def extract(filename= 'turnstile_190629.txt'):
 
 def transform(df):
     import pandas as pd
-    from datetime import datetime
-
-    #DateTime transform
-
 
     #column names
     df.columns = df.columns.str.strip()
@@ -67,6 +68,35 @@ def transform(df):
     df.to_pickle('.Turnstile_transformed.pickle')
     print('transformed into .Turnstile_transformed.pickle')
 
+def load(force=False, filename=''):
+    from os import path
+    import pandas as pd
+
+
+    if force:
+        print('Forcing through a new extract and transformation!')
+        df = transform(extract(filename))
+        print('Loaded forced new copy of data from .Turnstile_transformed.pickle!')
+        return df
+
+    elif path.exists('.Turnstile_transformed.pickle'):
+        print('Loaded old pickle of data from .Turnstile_transformed.pickle!')
+        return pd.read_pickle('.Turnstile_transformed.pickle')
+
+    else:
+        print('Loading a new copy of data for {}'.format(filename))
+        df = transform(extract(filename))
+        print('Loaded new copy of data from .Turnstile_transformed.pickle!')
+        return df
+
 
 if __name__ == "__main__":
-    transform(extract())
+    import sys
+
+    if len(sys.argv) > 1 and (sys.argv[1] in ['True', 'true']):
+        load(force=True, filename='turnstile_190629.txt')
+    elif len(sys.argv) > 1 and (sys.argv[1][-4:] == '.txt'):
+        print('loading from '+ sys.argv[1])
+        load(force=True, filename= sys.argv[1])
+    else:
+        load()
