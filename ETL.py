@@ -1,5 +1,7 @@
 #!/anaconda3/envs/metis/bin/python
 
+#comment
+
 # Fatima
 # TODO StationNames
 
@@ -33,6 +35,7 @@ def extract(filename=''):
 
 def transform(df):
     import pandas as pd
+    import numpy as np
 
     #column names
     df.columns = df.columns.str.strip()
@@ -57,20 +60,28 @@ def transform(df):
     #  15110.0]
 
     #delta turnstiles
-    cols_diff = ["ENTRIES", "EXITS"]
-    cols_add = ["TURNSTILE_ENTRIES", "TURNSTILE_EXITS"]
+    cols_diff = ["ENTRIES", "EXITS", "DATE_TIME"]
+    cols_add = ["TURNSTILE_ENTRIES", "TURNSTILE_EXITS", "TIME_DELTA"]
     #TODO update the entries to reverse the 'daily previous' as they look to be counting backwards for a few days
 
     df[cols_add] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])[cols_diff].diff()
-    df["entries_cumsum"] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])["TURNSTILE_ENTRIES"].cumsum()
+    df["entries_cumsum"] = df.groupby(by=["STATION", "C/A", "SCP","LINENAME"])["TURNSTILE_ENTRIES"].cumsum()
     df["exits_cumsum"] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])["TURNSTILE_EXITS"].cumsum()
-    df['sum_people'] = df['TURNSTILE_ENTRIES'] + df['TURNSTILE_EXITS']
+    df['sum_people'] = df['TURNSTILE_ENTRIES'] + df['TURNSTILE_EXITS']\
+
+    #FATIMA'S
+
+    df["TIME_IN_HOURS"] = df["TIME_DELTA"] / np.timedelta64(1, "h")
+    df["TURNSTILE_SUM_RATE"] = df["sum_people"] / df["TIME_IN_HOURS"]
+
+
     df.to_pickle('.Turnstile_transformed.pickle')
     print('transformed into .Turnstile_transformed.pickle')
 
 def load(force=False, filename=''):
     from os import path
     import pandas as pd
+    import numpy as np
 
 
     if force:
