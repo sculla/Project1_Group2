@@ -14,3 +14,7 @@
 \.DateTime_transformed\.pickle
 
 \.Turnstile_transformed\.pickle
+
+venv/
+
+__pycache__/
