@@ -67,7 +67,7 @@ def transform(df):
     df[cols_add] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])[cols_diff].diff()
     df["entries_cumsum"] = df.groupby(by=["STATION", "C/A", "SCP","LINENAME"])["TURNSTILE_ENTRIES"].cumsum()
     df["exits_cumsum"] = df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])["TURNSTILE_EXITS"].cumsum()
-    df['sum_people'] = df['TURNSTILE_ENTRIES'] + df['TURNSTILE_EXITS']\
+    df['sum_people'] = df['TURNSTILE_ENTRIES'] + df['TURNSTILE_EXITS']
 
     #FATIMA'S
 
@@ -99,7 +99,12 @@ def load(force=False, filename=''):
         df = transform(extract(filename))
         print('Loaded new copy of data from .Turnstile_transformed.pickle!')
         return df
-
+def do_thing(df):
+    import pandas as pd
+    daily_riders = df.groupby(by=["STATION", "LINENAME"])["TURNSTILE_ENTRIES", "TURNSTILE_EXITS"].sum().reset_index()
+    top_stations = daily_riders.sort_values(by=["TURNSTILE_ENTRIES"], ascending=False)
+    top_20_stations = top_stations[:20]
+    print(top_20_stations['STATION'])
 
 if __name__ == "__main__":
     import sys
