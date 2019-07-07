@@ -52,8 +52,8 @@ def _transform(loaded_df):
     """
     Transform a loaded python data frame from the MTA website, via _extract()
 
-    :param loaded_df:
-    :return:
+    :param loaded_df: data frame passed from _extract()
+    :return: transformed data frame, with new columns for turnstile statistics.
     """
 
     #column names
