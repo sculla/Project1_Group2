@@ -59,21 +59,22 @@ def _transform(loaded_df):
 
     #column names
     loaded_df.columns = loaded_df.columns.str.strip()
+    loaded_df["DAY"] = loaded_df["DATE_TIME"].dt.day_name()
 
     #delta turnstiles
     cols_diff = ["ENTRIES", "EXITS", "DATE_TIME"]
     cols_add = ["TURNSTILE_ENTRIES", "TURNSTILE_EXITS", "TIME_DELTA"]
-
-
     loaded_df[cols_add] = loaded_df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])\
         [cols_diff].diff()
     loaded_df["entries_cumsum"] = loaded_df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])\
         ["TURNSTILE_ENTRIES"].cumsum()
     loaded_df["exits_cumsum"] = loaded_df.groupby(by=["STATION", "C/A", "SCP", "LINENAME"])\
         ["TURNSTILE_EXITS"].cumsum()
+
+    #sum
     loaded_df['sum_people'] = loaded_df['TURNSTILE_ENTRIES'] + loaded_df['TURNSTILE_EXITS']
 
-    #FATIMA'S
+    #rates
     loaded_df["TIME_IN_HOURS"] = loaded_df['TIME_DELTA'].astype('timedelta64[h]')
     loaded_df["TURNSTILE_SUM_RATE"] = loaded_df["sum_people"] / loaded_df["TIME_IN_HOURS"]
 
@@ -82,11 +83,12 @@ def _transform(loaded_df):
     polished_df = loaded_df[mask]
     mask = (polished_df["TURNSTILE_SUM_RATE"] > 0)
     polished_df = polished_df[mask]
+
     #last few bits before export
     polished_df.drop(['ENTRIES', 'EXITS'], axis=1, inplace=True)
     polished_df.to_pickle('.Turnstile_transformed.pickle')
     print('transformed into .Turnstile_transformed.pickle')
-    return loaded_df
+    return polished_df
 
 def load(force=False, filename=''):
 
@@ -135,7 +137,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and (sys.argv[1] in ['True', 'true']):
         load(force=True, filename=sys.argv[2])
 
-    #Command line python project_etl.py {html link or .txt file from MTA}
+    #Command line python3 project_etl.py {html link or .txt file from MTA}
     elif len(sys.argv) > 1 and (str(sys.argv[1])[-4:] == '.txt'):
         print('loading from '+ str(sys.argv[1]))
         load(force=True, filename=sys.argv[1])
