@@ -1,9 +1,10 @@
 #!/anaconda3/envs/metis/bin/python
 
-
-##assumptions:
-##  keeping duplicates, they look to be audits back at same timestamp, and count is low.
-
+# assumptions:
+# keeping duplicates, they look to be audits back at same timestamp, and count is low.
+# negative rates do not meet expectations and are filtered out.
+# higher than 60 people per turnstile per minute are unrealistic, and are filtered out.
+# the immediate week before the gala was used to show the most recent data.
 
 """
 project_etl.py is a package which contains methods that extract,
