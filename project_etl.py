@@ -1,5 +1,6 @@
 #!/anaconda3/envs/metis/bin/python
 
+
 ##assumptions:
 ##  keeping duplicates, they look to be audits back at same timestamp, and count is low.
 
@@ -27,6 +28,8 @@ python3 project_etl.py http://web.mta.info/developers/data/nyct/turnstile/turnst
 >Loaded forced new copy of data from .Turnstile_transformed.pickle!
 
 """
+from os import path
+import pandas as pd
 
 def _extract(filename=''):
     """
@@ -37,8 +40,6 @@ def _extract(filename=''):
     date & time strings.
 
     """
-
-    import pandas as pd
 
     if filename == '':
         raise AttributeError("Filename cannot be blank, please provide file name/link.")
@@ -73,12 +74,17 @@ def _transform(loaded_df):
     loaded_df['sum_people'] = loaded_df['TURNSTILE_ENTRIES'] + loaded_df['TURNSTILE_EXITS']
 
     #FATIMA'S
-
     loaded_df["TIME_IN_HOURS"] = loaded_df['TIME_DELTA'].astype('timedelta64[h]')
     loaded_df["TURNSTILE_SUM_RATE"] = loaded_df["sum_people"] / loaded_df["TIME_IN_HOURS"]
 
-
-    loaded_df.to_pickle('.Turnstile_transformed.pickle')
+    #2 step masking to avoid Pandas SettingwithCopyWarning
+    mask = (loaded_df["TURNSTILE_SUM_RATE"] < 3600)
+    polished_df = loaded_df[mask]
+    mask = (polished_df["TURNSTILE_SUM_RATE"] > 0)
+    polished_df = polished_df[mask]
+    #last few bits before export
+    polished_df.drop(['ENTRIES', 'EXITS'], axis=1, inplace=True)
+    polished_df.to_pickle('.Turnstile_transformed.pickle')
     print('transformed into .Turnstile_transformed.pickle')
     return loaded_df
 
@@ -92,9 +98,6 @@ def load(force=False, filename=''):
     :param filename: file name to load, can be website, or a local text file in same directory.
     :return: Pandas DataFrame of the MTA data which has been transformed by _transform()
     """
-
-    from os import path
-    import pandas as pd
 
     if force:
         print('Forcing through a new extract and transformation!')
